@@ -4,6 +4,7 @@
 #include "os_detection.h"
 #include "unicode.h"
 #include QMK_KEYBOARD_H
+#include "features/achordion.h"
 
 #define KC_CTSC RCTL_T(KC_SCLN)
 #define KC_CTLA LCTL_T(KC_A)
@@ -58,6 +59,16 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 };
 
+bool process_record_user(uint16_t keycode, keyrecord_t* record) {
+  if (!process_achordion(keycode, record)) { return false; }
+
+  return true;
+}
+
+void matrix_scan_user(void) {
+  achordion_task();
+}
+
 bool process_detected_host_os_kb(os_variant_t detected_os) {
     if (!process_detected_host_os_user(detected_os)) {
         return false;
@@ -78,4 +89,13 @@ bool process_detected_host_os_kb(os_variant_t detected_os) {
     }
     
     return true;
+}
+
+bool achordion_chord(uint16_t tap_hold_keycode,
+                     keyrecord_t* tap_hold_record,
+                     uint16_t other_keycode,
+                     keyrecord_t* other_record) {
+  if (other_record->event.key.row == 4 || other_record->event.key.row == 8) { return true; }
+
+  return achordion_opposite_hands(tap_hold_record, other_record);
 }

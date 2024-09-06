@@ -12,3 +12,5 @@ RGBLIGHT_ENABLE = yes
 VIALRGB_ENABLE = no
 RGBLIGHT_DRIVER = ws2812
 WS2812_DRIVER = vendor
+
+SRC += features/achordion.c
